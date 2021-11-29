@@ -1,0 +1,52 @@
+{
+  "name": "Appointment",
+  "fields": [
+    {
+      "fieldName": "startAt",
+      "fieldType": "Instant",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "endAt",
+      "fieldType": "Instant",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "organizationId",
+      "fieldType": "Long",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "employeeId",
+      "fieldType": "Long",
+      "fieldValidateRules": ["required"]
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "customer",
+      "otherEntityRelationshipName": "appointment",
+      "relationshipName": "customer"
+    },
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "service",
+      "otherEntityRelationshipName": "appointment",
+      "relationshipName": "service"
+    }
+  ],
+  "entityTableName": "appointment",
+  "dto": "mapstruct",
+  "pagination": "pagination",
+  "service": "serviceImpl",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "applications": ["appointmentservice"],
+  "microserviceName": "appointmentservice",
+  "clientRootFolder": "appointmentservice",
+  "databaseType": "sql",
+  "changelogDate": "20211129131652"
+}

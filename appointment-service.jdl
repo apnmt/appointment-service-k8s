@@ -1,0 +1,56 @@
+application {
+  config {
+    baseName appointmentservice,
+    applicationType microservice,
+    packageName de.apnmt.appointment,
+    authenticationType jwt,
+    prodDatabaseType postgresql,
+    devDatabaseType h2Memory,
+    enableSwaggerCodegen true,
+    skipClient true,
+    cacheProvider no,
+    skipUserManagement true,
+    serviceDiscoveryType no
+  }
+  entities *
+}
+
+entity Customer {
+	lastName String required,
+    firstName String required,
+    mail String required,
+    phone String required,
+    birthday LocalDate required,
+    organizationId Long required
+}
+
+entity Appointment {
+	startAt Instant required,
+    endAt Instant required,
+    organizationId Long required,
+    employeeId Long required
+}
+
+entity Service {
+	name String  required,
+	description String  required,
+	duration Integer required,
+	cost Double required,
+    organizationId Long required
+}
+
+
+// defining multiple OneToMany relationships with comments
+relationship OneToMany {
+	Customer to Appointment{customer},
+	Service to Appointment{service}
+}
+
+// Set pagination options
+paginate * with pagination
+
+// Use Data Transfer Objects (DTO)
+dto * with mapstruct
+
+// Set service options to all except few
+service all with serviceImpl
