@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import tech.jhipster.config.JHipsterConstants;
@@ -18,7 +17,6 @@ import java.sql.SQLException;
 @Configuration
 @EnableJpaRepositories("de.apnmt.appointment.common.repository")
 @EntityScan("de.apnmt.appointment.common.domain")
-@EnableJpaAuditing(auditorAwareRef = "springSecurityAuditorAware")
 @EnableTransactionManagement
 public class DatabaseConfiguration {
 
@@ -39,7 +37,7 @@ public class DatabaseConfiguration {
     @Bean(initMethod = "start", destroyMethod = "stop")
     @Profile(JHipsterConstants.SPRING_PROFILE_DEVELOPMENT)
     public Object h2TCPServer() throws SQLException {
-        String port = getValidPortForH2();
+        String port = this.getValidPortForH2();
         this.log.debug("H2 database is available on port {}", port);
         return H2ConfigurationHelper.createServer(port);
     }

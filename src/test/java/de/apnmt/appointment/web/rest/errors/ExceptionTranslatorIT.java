@@ -2,11 +2,11 @@ package de.apnmt.appointment.web.rest.errors;
 
 import de.apnmt.appointment.IntegrationTest;
 import de.apnmt.appointment.common.web.rest.errors.ErrorConstants;
+import de.apnmt.appointment.common.web.rest.errors.ExceptionTranslator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -16,7 +16,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * Integration tests {@link ExceptionTranslator} controller advice.
  */
-@WithMockUser
 @AutoConfigureMockMvc
 @IntegrationTest
 class ExceptionTranslatorIT {
