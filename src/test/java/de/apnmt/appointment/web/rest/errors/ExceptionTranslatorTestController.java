@@ -1,12 +1,13 @@
 package de.apnmt.appointment.web.rest.errors;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
+import de.apnmt.common.errors.HttpError;
 import org.springframework.dao.ConcurrencyFailureException;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.*;
+import org.zalando.problem.Status;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 @RestController
 @RequestMapping("/api/exception-translator-test")
@@ -26,16 +27,6 @@ public class ExceptionTranslatorTestController {
     @GetMapping("/missing-servlet-request-parameter")
     public void missingServletRequestParameterException(@RequestParam String param) {}
 
-    @GetMapping("/access-denied")
-    public void accessdenied() {
-        throw new AccessDeniedException("test access denied!");
-    }
-
-    @GetMapping("/unauthorized")
-    public void unauthorized() {
-        throw new BadCredentialsException("test authentication failed!");
-    }
-
     @GetMapping("/response-status")
     public void exceptionWithResponseStatus() {
         throw new TestResponseStatusException();
@@ -46,13 +37,18 @@ public class ExceptionTranslatorTestController {
         throw new RuntimeException();
     }
 
+    @GetMapping("/http-error")
+    public void httpError() {
+        throw new HttpError(Status.NOT_FOUND, "http.error.not.found", "Http Error Not Found");
+    }
+
     public static class TestDTO {
 
         @NotNull
         private String test;
 
         public String getTest() {
-            return test;
+            return this.test;
         }
 
         public void setTest(String test) {
