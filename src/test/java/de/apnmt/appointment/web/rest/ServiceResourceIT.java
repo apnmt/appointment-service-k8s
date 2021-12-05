@@ -6,11 +6,18 @@ import de.apnmt.appointment.common.repository.ServiceRepository;
 import de.apnmt.appointment.common.service.dto.ServiceDTO;
 import de.apnmt.appointment.common.service.mapper.ServiceMapper;
 import de.apnmt.appointment.common.web.rest.ServiceResource;
+import de.apnmt.common.event.value.ServiceEventDTO;
+import de.apnmt.common.sender.ApnmtEventSender;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @IntegrationTest
 @AutoConfigureMockMvc
+@ContextConfiguration(classes = {ServiceResourceIT.EventSenderConfig.class})
 class ServiceResourceIT {
 
     private static final String DEFAULT_NAME = "AAAAAAAAAA";
@@ -536,5 +544,18 @@ class ServiceResourceIT {
         // Validate the database contains one less item
         List<Service> serviceList = this.serviceRepository.findAll();
         assertThat(serviceList).hasSize(databaseSizeBeforeDelete - 1);
+    }
+
+    @TestConfiguration
+    public static class EventSenderConfig {
+        private final Logger log = LoggerFactory.getLogger(ServiceResourceIT.EventSenderConfig.class);
+
+        @Bean
+        public ApnmtEventSender<ServiceEventDTO> sender() {
+            return (topic, event) -> {
+                this.log.info("Event send to topic {}", topic);
+            };
+        }
+
     }
 }

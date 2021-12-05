@@ -211,7 +211,7 @@ class AppointmentResourceIT {
             .perform(
                 post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(appointmentDTO))
             )
-            .andExpect(status().is5xxServerError());
+            .andExpect(status().isTooManyRequests());
 
         // Validate the Appointment in the database
         List<Appointment> appointmentList = this.appointmentRepository.findAll();
@@ -238,7 +238,7 @@ class AppointmentResourceIT {
             .perform(
                 post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(appointmentDTO))
             )
-            .andExpect(status().is5xxServerError());
+            .andExpect(status().isTooManyRequests());
 
         // Validate the Appointment in the database
         List<Appointment> appointmentList = this.appointmentRepository.findAll();
@@ -265,7 +265,7 @@ class AppointmentResourceIT {
             .perform(
                 post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(appointmentDTO))
             )
-            .andExpect(status().is5xxServerError());
+            .andExpect(status().isTooManyRequests());
 
         // Validate the Appointment in the database
         List<Appointment> appointmentList = this.appointmentRepository.findAll();
@@ -292,7 +292,7 @@ class AppointmentResourceIT {
             .perform(
                 post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(appointmentDTO))
             )
-            .andExpect(status().is5xxServerError());
+            .andExpect(status().isTooManyRequests());
 
         // Validate the Appointment in the database
         List<Appointment> appointmentList = this.appointmentRepository.findAll();
@@ -319,7 +319,7 @@ class AppointmentResourceIT {
             .perform(
                 post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(appointmentDTO))
             )
-            .andExpect(status().is5xxServerError());
+            .andExpect(status().is4xxClientError());
 
         // Validate the Appointment in the database
         List<Appointment> appointmentList = this.appointmentRepository.findAll();

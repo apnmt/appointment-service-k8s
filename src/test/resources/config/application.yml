@@ -69,7 +69,7 @@ spring:
   thymeleaf:
     mode: HTML
   kafka:
-    bootstrap-servers: ${spring.embedded.kafka.brokers}
+    bootstrap-servers: localhost:58255
 
 server:
   port: 10344

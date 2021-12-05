@@ -7,7 +7,7 @@ import de.apnmt.appointment.IntegrationTest;
 import de.apnmt.common.TopicConstants;
 import de.apnmt.common.event.ApnmtEvent;
 import de.apnmt.common.event.ApnmtEventType;
-import de.apnmt.common.event.value.AppointmentEventDTO;
+import de.apnmt.common.event.value.ServiceEventDTO;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -36,11 +36,11 @@ import java.util.concurrent.TimeUnit;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @EnableKafka
-@EmbeddedKafka(ports = {58255}, topics = {TopicConstants.APPOINTMENT_CHANGED_TOPIC})
+@EmbeddedKafka(ports = {58255}, topics = {TopicConstants.SERVICE_CHANGED_TOPIC})
 @IntegrationTest
 @AutoConfigureMockMvc
 @DirtiesContext
-public class AppointmentEventSenderIT {
+public class ServiceEventSenderIT {
 
     private static final LocalDateTime DEFAULT_START_AT = LocalDateTime.of(2021, 12, 24, 0, 0, 11, 0);
     private static final LocalDateTime DEFAULT_END_AT = LocalDateTime.of(2021, 12, 25, 0, 0, 11, 0);
@@ -53,7 +53,7 @@ public class AppointmentEventSenderIT {
     private EmbeddedKafkaBroker embeddedKafkaBroker;
 
     @Autowired
-    private AppointmentEventSender appointmentEventSender;
+    private ServiceEventSender serviceEventSender;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -61,7 +61,7 @@ public class AppointmentEventSenderIT {
     @BeforeEach
     public void setUp() {
         DefaultKafkaConsumerFactory<String, String> consumerFactory = new DefaultKafkaConsumerFactory<>(this.getConsumerProperties());
-        ContainerProperties containerProperties = new ContainerProperties(TopicConstants.APPOINTMENT_CHANGED_TOPIC);
+        ContainerProperties containerProperties = new ContainerProperties(TopicConstants.SERVICE_CHANGED_TOPIC);
         this.container = new KafkaMessageListenerContainer<>(consumerFactory, containerProperties);
         this.records = new LinkedBlockingQueue<>();
         this.container.setupMessageListener((MessageListener<String, Object>) this.records::add);
@@ -88,23 +88,24 @@ public class AppointmentEventSenderIT {
 
     @Test
     public void appointmentEventSenderTest() throws InterruptedException, JsonProcessingException {
-        AppointmentEventDTO appointment = new AppointmentEventDTO();
-        appointment.setId(1L);
-        appointment.setStartAt(DEFAULT_START_AT);
-        appointment.setEndAt(DEFAULT_END_AT);
-        appointment.setEmployeeId(2L);
-        appointment.setOrganizationId(3L);
+        ServiceEventDTO service = new ServiceEventDTO();
+        service.setId(1L);
+        service.setName("Service");
+        service.setDescription("Service Description");
+        service.setCost(30.0);
+        service.setDuration(30);
+        service.setOrganizationId(2L);
 
-        ApnmtEvent<AppointmentEventDTO> event = new ApnmtEvent<AppointmentEventDTO>().timestamp(LocalDateTime.now()).type(ApnmtEventType.appointmentCreated).value(appointment);
-        this.appointmentEventSender.send(TopicConstants.APPOINTMENT_CHANGED_TOPIC, event);
+        ApnmtEvent<ServiceEventDTO> event = new ApnmtEvent<ServiceEventDTO>().timestamp(LocalDateTime.now()).type(ApnmtEventType.serviceCreated).value(service);
+        this.serviceEventSender.send(TopicConstants.SERVICE_CHANGED_TOPIC, event);
 
         ConsumerRecord<String, Object> message = this.records.poll(500, TimeUnit.MILLISECONDS);
         assertThat(message).isNotNull();
         assertThat(message.value()).isNotNull();
 
-        TypeReference<ApnmtEvent<AppointmentEventDTO>> eventType = new TypeReference<>() {
+        TypeReference<ApnmtEvent<ServiceEventDTO>> eventType = new TypeReference<>() {
         };
-        ApnmtEvent<AppointmentEventDTO> eventResult = this.objectMapper.readValue(message.value().toString(), eventType);
+        ApnmtEvent<ServiceEventDTO> eventResult = this.objectMapper.readValue(message.value().toString(), eventType);
         assertThat(eventResult).isEqualTo(event);
     }
 
