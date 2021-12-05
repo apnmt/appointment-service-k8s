@@ -15,8 +15,8 @@
 
 spring:
   profiles:
-    # Uncomment the following line to enable tests against production database type rather than H2, using Testcontainers
-    #active: testcontainers
+  # Uncomment the following line to enable tests against production database type rather than H2, using Testcontainers
+  #active: testcontainers
   application:
     name: appointmentservice
   datasource:
@@ -68,6 +68,8 @@ spring:
         size: 1
   thymeleaf:
     mode: HTML
+  kafka:
+    bootstrap-servers: ${spring.embedded.kafka.brokers}
 
 server:
   port: 10344

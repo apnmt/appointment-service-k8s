@@ -6,11 +6,18 @@ import de.apnmt.appointment.common.repository.AppointmentRepository;
 import de.apnmt.appointment.common.service.dto.AppointmentDTO;
 import de.apnmt.appointment.common.service.mapper.AppointmentMapper;
 import de.apnmt.appointment.common.web.rest.AppointmentResource;
+import de.apnmt.common.event.value.AppointmentEventDTO;
+import de.apnmt.common.sender.ApnmtEventSender;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,6 +39,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @IntegrationTest
 @AutoConfigureMockMvc
+@ContextConfiguration(classes = {AppointmentResourceIT.EventSenderConfig.class})
 class AppointmentResourceIT {
 
     private static final LocalDateTime DEFAULT_START_AT = LocalDateTime.of(2021, 12, 24, 0, 0, 11, 0);
@@ -49,8 +57,8 @@ class AppointmentResourceIT {
     private static final String ENTITY_API_URL = "/api/appointments";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
 
-    private static Random random = new Random();
-    private static AtomicLong count = new AtomicLong(random.nextInt() + (2 * Integer.MAX_VALUE));
+    private static final Random random = new Random();
+    private static final AtomicLong count = new AtomicLong(random.nextInt() + (2 * Integer.MAX_VALUE));
 
     @Autowired
     private AppointmentRepository appointmentRepository;
@@ -72,7 +80,7 @@ class AppointmentResourceIT {
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
-    public static Appointment createEntity(EntityManager em) {
+    public static Appointment createEntity() {
         Appointment appointment = new Appointment()
             .startAt(DEFAULT_START_AT)
             .endAt(DEFAULT_END_AT)
@@ -87,7 +95,7 @@ class AppointmentResourceIT {
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
-    public static Appointment createUpdatedEntity(EntityManager em) {
+    public static Appointment createUpdatedEntity() {
         Appointment appointment = new Appointment()
             .startAt(UPDATED_START_AT)
             .endAt(UPDATED_END_AT)
@@ -113,7 +121,7 @@ class AppointmentResourceIT {
 
     @BeforeEach
     public void initTest() {
-        this.appointment = createEntity(this.em);
+        this.appointment = createEntity();
     }
 
     @Test
@@ -581,4 +589,18 @@ class AppointmentResourceIT {
         List<Appointment> appointmentList = this.appointmentRepository.findAll();
         assertThat(appointmentList).hasSize(databaseSizeBeforeDelete - 1);
     }
+
+    @TestConfiguration
+    public static class EventSenderConfig {
+        private final Logger log = LoggerFactory.getLogger(EventSenderConfig.class);
+
+        @Bean
+        public ApnmtEventSender<AppointmentEventDTO> sender() {
+            return (topic, event) -> {
+                this.log.info("Event send to topic {}", topic);
+            };
+        }
+
+    }
+
 }

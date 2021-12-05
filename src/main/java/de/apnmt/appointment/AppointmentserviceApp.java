@@ -19,7 +19,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
 
-@SpringBootApplication(scanBasePackages = {"de.apnmt.common", "de.apnmt.appointment.common", "de.apnmt.appointment"})
+@SpringBootApplication(scanBasePackages = {"de.apnmt.common", "de.apnmt.k8s.common", "de.apnmt.appointment.common", "de.apnmt.appointment"})
 @EnableConfigurationProperties({LiquibaseProperties.class, ApplicationProperties.class})
 public class AppointmentserviceApp {
 
