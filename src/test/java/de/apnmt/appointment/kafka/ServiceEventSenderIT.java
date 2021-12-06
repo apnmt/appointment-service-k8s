@@ -3,6 +3,7 @@ package de.apnmt.appointment.kafka;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import de.apnmt.appointment.IntegrationTest;
+import de.apnmt.common.ApnmtTestUtil;
 import de.apnmt.common.TopicConstants;
 import de.apnmt.common.event.ApnmtEvent;
 import de.apnmt.common.event.ApnmtEventType;
@@ -16,7 +17,6 @@ import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.test.annotation.DirtiesContext;
 
-import java.time.LocalDateTime;
 import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -38,15 +38,8 @@ public class ServiceEventSenderIT extends AbstractEventSenderIT {
 
     @Test
     public void appointmentEventSenderTest() throws InterruptedException, JsonProcessingException {
-        ServiceEventDTO service = new ServiceEventDTO();
-        service.setId(1L);
-        service.setName("Service");
-        service.setDescription("Service Description");
-        service.setCost(30.0);
-        service.setDuration(30);
-        service.setOrganizationId(2L);
 
-        ApnmtEvent<ServiceEventDTO> event = new ApnmtEvent<ServiceEventDTO>().timestamp(LocalDateTime.now()).type(ApnmtEventType.serviceCreated).value(service);
+        ApnmtEvent<ServiceEventDTO> event = ApnmtTestUtil.createServiceEvent(ApnmtEventType.serviceCreated);
         this.serviceEventSender.send(TopicConstants.SERVICE_CHANGED_TOPIC, event);
 
         ConsumerRecord<String, Object> message = this.records.poll(500, TimeUnit.MILLISECONDS);
