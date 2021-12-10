@@ -27,7 +27,7 @@ management:
     web:
       base-path: /management
       exposure:
-        include: ['configprops', 'env', 'health', 'info', 'jhimetrics', 'logfile', 'loggers', 'prometheus', 'threaddump', 'liquibase']
+        include: [ 'configprops', 'env', 'health', 'info', 'jhimetrics', 'logfile', 'loggers', 'prometheus', 'threaddump', 'liquibase' ]
   endpoint:
     health:
       show-details: when_authorized
@@ -132,6 +132,10 @@ spring:
   output:
     ansi:
       console-available: true
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: appointment-service
 
 server:
   servlet:
