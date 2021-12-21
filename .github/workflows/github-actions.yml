@@ -61,7 +61,7 @@ jobs:
         run: |
           cp src/main/helm/values.yaml k8s-config/charts
       - name: Set Helm Chart Name
-        uses: datamonsters/replace-action
+        uses: datamonsters/replace-action@v2
         with:
           files: 'k8s-config/charts/Chart.yaml'
           replacements: '^CFG:name^=appointmentservice-k8s'
