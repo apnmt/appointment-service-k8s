@@ -16,7 +16,7 @@
         <repository>
             <id>github</id>
             <name>GitHub</name>
-            <url>https://maven.pkg.github.com/apnmt/</url>
+            <url>https://maven.pkg.github.com/apnmt/appointment-service-common</url>
         </repository>
         <!-- jhipster-needle-maven-repository -->
     </repositories>
