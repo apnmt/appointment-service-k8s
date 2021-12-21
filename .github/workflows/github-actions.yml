@@ -1,10 +1,14 @@
 name: Application CI/CD Production
 on:
-  release:
-    types: [created]
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
 jobs:
   pipeline:
-    name: orgservice pipeline
+    name: appointmentservice-k8s pipeline
     runs-on: ubuntu-latest
     if: "!contains(github.event.head_commit.message, '[ci skip]') && !contains(github.event.head_commit.message, '[skip ci]') && !contains(github.event.pull_request.title, '[skip ci]') && !contains(github.event.pull_request.title, '[ci skip]')"
     timeout-minutes: 40
@@ -77,4 +81,3 @@ jobs:
           destination_repo: 'apnmt/apnmt-charts'
           user_email: 'tobias.wittmann96@web.de'
           user_name: 'tobi5775'
-
