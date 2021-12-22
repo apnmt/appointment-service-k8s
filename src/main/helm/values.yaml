@@ -2,8 +2,6 @@
 
 replicaCount: 1
 
-namespace: apnmt
-
 image:
     tag: appointmentservice-k8s
     pullPolicy: Always
