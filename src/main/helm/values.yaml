@@ -11,7 +11,7 @@ emissary:
 
 spec:
     ports:
-        targetPort: 8083
+        targetPort: 8081
 
 properties:
     bootstrapServer:
