@@ -1,4 +1,4 @@
-name: Build Helm Chart
+name: Build Helm Chart Reusable Workflow
 on:
   workflow_call:
     secrets:

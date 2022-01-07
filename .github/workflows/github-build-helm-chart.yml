@@ -1,4 +1,4 @@
-name: Application CI/CD Production
+name: Build Helm Chart
 on: workflow_dispatch
 jobs:
   build-helm-chart:
