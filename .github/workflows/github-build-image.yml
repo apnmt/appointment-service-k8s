@@ -54,3 +54,7 @@ jobs:
   build-helm-chart:
     needs: pipeline
     uses: apnmt/appointment-service-k8s/.github/workflows/github-actions-build-helm-chart.yml@master
+    with:
+      secrets:
+        GH_PACKAGE_REPO_USERNAME: ${{ secrets.GH_PACKAGE_REPO_USERNAME }}
+        GH_PACKAGE_REPO_PASSWORD: ${{ secrets.GH_PACKAGE_REPO_PASSWORD }}
