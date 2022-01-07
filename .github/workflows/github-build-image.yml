@@ -52,4 +52,5 @@ jobs:
           ./mvnw -ntp jib:build -Djib.to.image=wittman8/apnmt:appointmentservice-k8s-${RELEASE_VERSION} -Djib.to.auth.username="${{ secrets.DOCKER_USERNAME }}" -Djib.to.auth.password="${{ secrets.DOCKER_PASSWORD }}"
 
   build-helm-chart:
+    needs: pipeline
     uses: apnmt/appointment-service-k8s/.github/workflows/github-actions-build-helm-chart.yml@master
