@@ -30,12 +30,11 @@ jobs:
       - name: Set Release version env variable
         run: |
           echo "RELEASE_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
-      - run: echo "${RELEASE_VERSION}"
       - name: Set Helm Chart Tag
         uses: datamonsters/replace-action@v2
         with:
           files: 'src/main/helm/values.yaml'
-          replacements: "^CFG:tag^=appointmentservice-k8s-${RELEASE_VERSION}"
+          replacements: '^CFG:tag^=appointmentservice-k8s-${RELEASE_VERSION}'
       - name: Combine values.yml
         run: |
           cat src/main/helm/values.yaml >> k8s-config/charts/values.yaml
