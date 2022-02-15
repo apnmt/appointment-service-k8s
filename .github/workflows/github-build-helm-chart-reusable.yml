@@ -24,6 +24,11 @@ jobs:
           ref: postgres
           path: k8s-config
           token: ${{ secrets.GH_PACKAGE_REPO_PASSWORD }}
+      - name: Set Helm Chart Name
+        uses: datamonsters/replace-action@v2
+        with:
+          files: 'k8s-config/charts/Chart.yaml'
+          replacements: '^CFG:tag^=appointmentservice-k8s-${RELEASE_VERSION}'
       - name: Combine values.yml
         run: |
           cat src/main/helm/values.yaml >> k8s-config/charts/values.yaml
