@@ -24,6 +24,12 @@ jobs:
           ref: postgres
           path: k8s-config
           token: ${{ secrets.GH_PACKAGE_REPO_PASSWORD }}
+      - name: Remove SNAPSHOT
+        run: |
+          mvn versions:set -DremoveSnapshot
+      - name: Set Release version env variable
+        run: |
+          echo "RELEASE_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
       - name: Combine values.yml
         run: |
           cat src/main/helm/values.yaml >> k8s-config/charts/values.yaml
