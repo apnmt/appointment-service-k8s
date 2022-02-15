@@ -3,7 +3,7 @@
 replicaCount: 1
 
 image:
-    tag: ^CFG:tag^
+    tag: appointmentservice-k8s
     pullPolicy: Always
 
 emissary:

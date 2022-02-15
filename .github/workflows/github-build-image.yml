@@ -49,7 +49,7 @@ jobs:
         run: ./mvnw package -Pprod
       - name: Build and publish docker image
         run: |
-          ./mvnw -ntp jib:build -Djib.to.image=wittman8/apnmt:appointmentservice-k8s-${RELEASE_VERSION} -Djib.to.auth.username="${{ secrets.DOCKER_USERNAME }}" -Djib.to.auth.password="${{ secrets.DOCKER_PASSWORD }}"
+          ./mvnw -ntp jib:build -Djib.to.image=wittman8/apnmt:appointmentservice-k8s -Djib.to.auth.username="${{ secrets.DOCKER_USERNAME }}" -Djib.to.auth.password="${{ secrets.DOCKER_PASSWORD }}"
 
   build-helm-chart:
     needs: pipeline
