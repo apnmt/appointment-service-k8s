@@ -25,4 +25,4 @@ properties:
         value: true
     zipkinBaseUrl:
         name: SPRING_ZIPKIN_BASEURL
-        value: jaeger-collector.apnmt.svc.cluster.local:9411
+        value: http://jaeger-collector.apnmt.svc.cluster.local:9411
