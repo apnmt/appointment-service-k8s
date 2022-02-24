@@ -31,7 +31,7 @@ jobs:
       - name: Cache
         uses: actions/cache@v2.1.5
         with:
-          key: apnmt-appointmentservice-k8s
+          key: apnmt-appointmentservice-k8s-${{ secrets.CACHE_VERSION }}
           path: |
             ~/.m2/repository
             ~/.m2/wrapper
