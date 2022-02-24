@@ -141,6 +141,7 @@ class AppointmentResourceIT extends AbstractEventSenderIT {
     void createAppointment() throws Exception {
         int databaseSizeBeforeCreate = this.appointmentRepository.findAll().size();
         // Create the Appointment
+        this.appointment.setCustomer(CustomerResourceIT.createEntity(em));
         AppointmentDTO appointmentDTO = this.appointmentMapper.toDto(this.appointment);
         this.restAppointmentMockMvc.perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(appointmentDTO)))
             .andExpect(status().isCreated());
@@ -153,6 +154,7 @@ class AppointmentResourceIT extends AbstractEventSenderIT {
         assertThat(testAppointment.getEndAt()).isEqualTo(DEFAULT_END_AT);
         assertThat(testAppointment.getOrganizationId()).isEqualTo(DEFAULT_ORGANIZATION_ID);
         assertThat(testAppointment.getEmployeeId()).isEqualTo(DEFAULT_EMPLOYEE_ID);
+        assertThat(testAppointment.getCustomer()).isNotNull();
 
         ConsumerRecord<String, Object> message = this.records.poll(500, TimeUnit.MILLISECONDS);
         assertThat(message).isNotNull();
