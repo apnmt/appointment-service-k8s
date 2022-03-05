@@ -19,10 +19,19 @@ properties:
         value: apnmt-kafka-kafka-bootstrap.apnmt.svc.cluster.local:9092
     autoStartup:
         name: SPRING_KAFKA_AUTOSTARTUP
-        value: false
+        value: true
     zipkinEnabled:
         name: SPRING_ZIPKIN_ENABLED
         value: true
     zipkinBaseUrl:
         name: SPRING_ZIPKIN_BASEURL
         value: http://jaeger-collector.apnmt.svc.cluster.local:9411
+    loggingJsonFormat:
+        name: JHIPSTER_LOGGING_USEJSONFORMAT
+        value: true
+    loggingLogstashEnabled:
+        name: JHIPSTER_LOGGING_LOGSTASH_ENABLED
+        value: true
+    loggingLogstashHost:
+        name: JHIPSTER_LOGGING_LOGSTASH_HOST
+        value: apnmt-elk-logstash.apnmt.svc.cluster.local
