@@ -73,6 +73,9 @@ spring:
     consumer:
       group-id: appointment-service
       auto-startup: true
+  zipkin:
+    base-url: localhost:9041
+    enabled: false
 
 server:
   port: 10344

@@ -31,6 +31,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -278,6 +279,38 @@ class ServiceResourceIT extends AbstractEventSenderIT {
             .andExpect(jsonPath("$.[*].duration").value(hasItem(DEFAULT_DURATION)))
             .andExpect(jsonPath("$.[*].cost").value(hasItem(DEFAULT_COST.doubleValue())))
             .andExpect(jsonPath("$.[*].organizationId").value(hasItem(DEFAULT_ORGANIZATION_ID.intValue())));
+    }
+
+    @Test
+    @Transactional
+    void getAllServicesForOrganization() throws Exception {
+        // Initialize the database
+        this.serviceRepository.saveAndFlush(this.service);
+
+        // Get all the serviceList
+        this.restServiceMockMvc.perform(get(ENTITY_API_URL + "/organization/" + DEFAULT_ORGANIZATION_ID +  "?sort=id,desc"))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(jsonPath("$.[*]").value(hasSize(1)))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(this.service.getId().intValue())))
+            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
+            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)))
+            .andExpect(jsonPath("$.[*].duration").value(hasItem(DEFAULT_DURATION)))
+            .andExpect(jsonPath("$.[*].cost").value(hasItem(DEFAULT_COST.doubleValue())))
+            .andExpect(jsonPath("$.[*].organizationId").value(hasItem(DEFAULT_ORGANIZATION_ID.intValue())));
+    }
+
+    @Test
+    @Transactional
+    void getAllServicesForOrganizationEmpty() throws Exception {
+        // Initialize the database
+        this.serviceRepository.saveAndFlush(this.service);
+
+        // Get all the serviceList
+        this.restServiceMockMvc.perform(get(ENTITY_API_URL + "/organization/" + UPDATED_ORGANIZATION_ID +  "?sort=id,desc"))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(jsonPath("$.[*]").value(hasSize(0)));
     }
 
     @Test
