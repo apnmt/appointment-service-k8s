@@ -16,9 +16,9 @@ spec:
 properties:
     bootstrapServer:
         name: SPRING_KAFKA_BOOTSTRAPSERVERS
-        value: apnmt-kafka-kafka-bootstrap.apnmt.svc.cluster.local:9092
+        value: kafka-cluster-kafka-bootstrap.apnmt.svc.cluster.local:9092
     autoStartup:
-        name: SPRING_KAFKA_AUTOSTARTUP
+        name: SPRING_KAFKA_CONSUMER_AUTOSTARTUP
         value: true
     zipkinEnabled:
         name: SPRING_ZIPKIN_ENABLED
