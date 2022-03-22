@@ -23,6 +23,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -277,6 +278,39 @@ class CustomerResourceIT {
             .andExpect(jsonPath("$.[*].phone").value(hasItem(DEFAULT_PHONE)))
             .andExpect(jsonPath("$.[*].birthday").value(hasItem(DEFAULT_BIRTHDAY.toString())))
             .andExpect(jsonPath("$.[*].organizationId").value(hasItem(DEFAULT_ORGANIZATION_ID.intValue())));
+    }
+
+    @Test
+    @Transactional
+    void getAllServicesForOrganization() throws Exception {
+        // Initialize the database
+        this.customerRepository.saveAndFlush(this.customer);
+
+        // Get all the serviceList
+        this.restCustomerMockMvc.perform(get(ENTITY_API_URL + "/organization/" + DEFAULT_ORGANIZATION_ID +  "?sort=id,desc"))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(jsonPath("$.[*]").value(hasSize(1)))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(this.customer.getId().intValue())))
+            .andExpect(jsonPath("$.[*].lastName").value(hasItem(DEFAULT_LAST_NAME)))
+            .andExpect(jsonPath("$.[*].firstName").value(hasItem(DEFAULT_FIRST_NAME)))
+            .andExpect(jsonPath("$.[*].mail").value(hasItem(DEFAULT_MAIL)))
+            .andExpect(jsonPath("$.[*].phone").value(hasItem(DEFAULT_PHONE)))
+            .andExpect(jsonPath("$.[*].birthday").value(hasItem(DEFAULT_BIRTHDAY.toString())))
+            .andExpect(jsonPath("$.[*].organizationId").value(hasItem(DEFAULT_ORGANIZATION_ID.intValue())));
+    }
+
+    @Test
+    @Transactional
+    void getAllServicesForOrganizationEmpty() throws Exception {
+        // Initialize the database
+        this.customerRepository.saveAndFlush(this.customer);
+
+        // Get all the serviceList
+        this.restCustomerMockMvc.perform(get(ENTITY_API_URL + "/organization/" + UPDATED_ORGANIZATION_ID +  "?sort=id,desc"))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(jsonPath("$.[*]").value(hasSize(0)));
     }
 
     @Test

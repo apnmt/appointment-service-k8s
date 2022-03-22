@@ -34,6 +34,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -430,6 +431,66 @@ class AppointmentResourceIT extends AbstractEventSenderIT {
             .andExpect(jsonPath("$.[*].endAt").value(hasItem(DEFAULT_END_AT.toString())))
             .andExpect(jsonPath("$.[*].organizationId").value(hasItem(DEFAULT_ORGANIZATION_ID.intValue())))
             .andExpect(jsonPath("$.[*].employeeId").value(hasItem(DEFAULT_EMPLOYEE_ID.intValue())));
+    }
+
+    @Test
+    @Transactional
+    void getAllAppointmentsForOrganizationAndEmployee() throws Exception {
+        // Initialize the database
+        this.appointmentRepository.saveAndFlush(this.appointment);
+
+        // Get all the appointmentList
+        this.restAppointmentMockMvc.perform(get(ENTITY_API_URL + "/organization/" + DEFAULT_ORGANIZATION_ID.intValue() + "/employee/" + DEFAULT_EMPLOYEE_ID.intValue() + "?start=" + DEFAULT_START_AT.minusHours(1) + "&end=" + DEFAULT_END_AT.plusHours(1)))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(this.appointment.getId().intValue())))
+            .andExpect(jsonPath("$.[*].startAt").value(hasItem(DEFAULT_START_AT.toString())))
+            .andExpect(jsonPath("$.[*].endAt").value(hasItem(DEFAULT_END_AT.toString())))
+            .andExpect(jsonPath("$.[*].organizationId").value(hasItem(DEFAULT_ORGANIZATION_ID.intValue())))
+            .andExpect(jsonPath("$.[*].employeeId").value(hasItem(DEFAULT_EMPLOYEE_ID.intValue())));
+    }
+
+    @Test
+    @Transactional
+    void getAllAppointmentsForOrganizationAndEmployeeEmpty() throws Exception {
+        // Initialize the database
+        this.appointmentRepository.saveAndFlush(this.appointment);
+
+        // Get all the appointmentList
+        this.restAppointmentMockMvc.perform(get(ENTITY_API_URL + "/organization/" + DEFAULT_ORGANIZATION_ID.intValue() + "/employee/" + DEFAULT_EMPLOYEE_ID.intValue() + "?start=" + DEFAULT_START_AT.plusHours(1) + "&end=" + DEFAULT_END_AT.minusHours(1)))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(jsonPath("$.[*]", hasSize(0)));
+    }
+
+    @Test
+    @Transactional
+    void getAllAppointmentsForOrganization() throws Exception {
+        // Initialize the database
+        this.appointmentRepository.saveAndFlush(this.appointment);
+
+        // Get all the appointmentList
+        this.restAppointmentMockMvc.perform(get(ENTITY_API_URL + "/organization/" + DEFAULT_ORGANIZATION_ID.intValue() + "?start=" + DEFAULT_START_AT.minusHours(1) + "&end=" + DEFAULT_END_AT.plusHours(1)))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(this.appointment.getId().intValue())))
+            .andExpect(jsonPath("$.[*].startAt").value(hasItem(DEFAULT_START_AT.toString())))
+            .andExpect(jsonPath("$.[*].endAt").value(hasItem(DEFAULT_END_AT.toString())))
+            .andExpect(jsonPath("$.[*].organizationId").value(hasItem(DEFAULT_ORGANIZATION_ID.intValue())))
+            .andExpect(jsonPath("$.[*].employeeId").value(hasItem(DEFAULT_EMPLOYEE_ID.intValue())));
+    }
+
+    @Test
+    @Transactional
+    void getAllAppointmentsForOrganizationEmpty() throws Exception {
+        // Initialize the database
+        this.appointmentRepository.saveAndFlush(this.appointment);
+
+        // Get all the appointmentList
+        this.restAppointmentMockMvc.perform(get(ENTITY_API_URL + "/organization/" + DEFAULT_ORGANIZATION_ID.intValue() + "?start=" + DEFAULT_START_AT.plusHours(1) + "&end=" + DEFAULT_END_AT.minusHours(1)))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(jsonPath("$.[*]", hasSize(0)));
     }
 
     @Test
