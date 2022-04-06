@@ -645,4 +645,20 @@ class AppointmentResourceIT extends AbstractEventSenderIT {
         assertThat(appointmentEventDTO.getEndAt()).isEqualTo(this.appointment.getEndAt());
     }
 
+    @Test
+    @Transactional
+    void deleteAllAppointments() throws Exception {
+        // Initialize the database
+        this.appointmentRepository.saveAndFlush(this.appointment);
+
+        int databaseSizeBeforeDelete = this.appointmentRepository.findAll().size();
+
+        // Delete the appointment
+        this.restAppointmentMockMvc.perform(delete(ENTITY_API_URL).accept(MediaType.APPLICATION_JSON)).andExpect(status().isNoContent());
+
+        // Validate the database contains no more item
+        List<Appointment> appointmentList = this.appointmentRepository.findAll();
+        assertThat(appointmentList).hasSize(0);
+    }
+
 }

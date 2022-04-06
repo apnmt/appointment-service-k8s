@@ -604,4 +604,22 @@ class CustomerResourceIT {
         List<Customer> customerList = this.customerRepository.findAll();
         assertThat(customerList).hasSize(databaseSizeBeforeDelete - 1);
     }
+
+    @Test
+    @Transactional
+    void deleteAllCustomers() throws Exception {
+        // Initialize the database
+        this.customerRepository.saveAndFlush(this.customer);
+
+        int databaseSizeBeforeDelete = this.customerRepository.findAll().size();
+
+        // Delete the customer
+        this.restCustomerMockMvc
+            .perform(delete(ENTITY_API_URL).accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isNoContent());
+
+        // Validate the database contains one less item
+        List<Customer> customerList = this.customerRepository.findAll();
+        assertThat(customerList).hasSize(0);
+    }
 }
