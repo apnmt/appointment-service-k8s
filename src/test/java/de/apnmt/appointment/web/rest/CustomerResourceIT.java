@@ -620,6 +620,6 @@ class CustomerResourceIT {
 
         // Validate the database contains one less item
         List<Customer> customerList = this.customerRepository.findAll();
-        assertThat(customerList).hasSize(0);
+        assertThat(customerList).hasSize(databaseSizeBeforeDelete - 1);
     }
 }

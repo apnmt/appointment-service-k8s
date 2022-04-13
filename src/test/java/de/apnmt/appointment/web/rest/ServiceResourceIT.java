@@ -8,6 +8,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import javax.persistence.EntityManager;
 import com.fasterxml.jackson.core.type.TypeReference;
 import de.apnmt.appointment.IntegrationTest;
+import de.apnmt.appointment.common.domain.Customer;
 import de.apnmt.appointment.common.domain.Service;
 import de.apnmt.appointment.common.repository.ServiceRepository;
 import de.apnmt.appointment.common.service.dto.ServiceDTO;
@@ -64,7 +65,7 @@ class ServiceResourceIT extends AbstractEventSenderIT {
     private static final Double UPDATED_COST = 2D;
 
     private static final Long DEFAULT_ORGANIZATION_ID = 1L;
-    private static final Long UPDATED_ORGANIZATION_ID = 2L;
+    private static final Long UPDATED_ORGANIZATION_ID = 505L;
 
     private static final String ENTITY_API_URL = "/api/services";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
@@ -291,7 +292,7 @@ class ServiceResourceIT extends AbstractEventSenderIT {
         this.restServiceMockMvc.perform(get(ENTITY_API_URL + "/organization/" + DEFAULT_ORGANIZATION_ID +  "?sort=id,desc"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.[*]").value(hasSize(1)))
+            .andExpect(jsonPath("$.[*]").value(hasSize(3)))
             .andExpect(jsonPath("$.[*].id").value(hasItem(this.service.getId().intValue())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
             .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)))
@@ -609,5 +610,23 @@ class ServiceResourceIT extends AbstractEventSenderIT {
         assertThat(serviceEventDTO.getDescription()).isEqualTo(this.service.getDescription());
         assertThat(serviceEventDTO.getDuration()).isEqualTo(this.service.getDuration());
         assertThat(serviceEventDTO.getCost()).isEqualTo(this.service.getCost());
+    }
+
+    @Test
+    @Transactional
+    void deleteAllServices() throws Exception {
+        // Initialize the database
+        this.serviceRepository.saveAndFlush(this.service);
+
+        int databaseSizeBeforeDelete = this.serviceRepository.findAll().size();
+
+        // Delete the service
+        this.restServiceMockMvc
+            .perform(delete(ENTITY_API_URL).accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isNoContent());
+
+        // Validate the database contains one less item
+        List<Service> serviceList = this.serviceRepository.findAll();
+        assertThat(serviceList).hasSize(databaseSizeBeforeDelete - 1);
     }
 }
